@@ -1,7 +1,7 @@
 #
 # Author:: Doug MacEachern <dougm@vmware.com>
 # Cookbook Name:: windows
-# Recipe:: java
+# Recipe:: default
 #
 # Copyright 2010, VMware, Inc.
 #
