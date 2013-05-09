@@ -17,16 +17,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# You want to get the offline installers from here: 
+# http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
 
-#XXX no direct public download link for sun java
-#Hudson "Performs a license click through and obtains the one-time URL for downloading bits."
-#if anyone feels up for converting to ruby:
-#http://github.com/kohsuke/hudson/blob/master/core/src/main/java/hudson/tools/JDKInstaller.java
-#in the meantime, just plop the .exe's behind any http server and configure java[:mirror]
-
-#jdk-6u20-windows-x64.exe
-#jdk-6u20-windows-i586.exe
-installer = ["jdk", node[:java][:release], "windows", node[:java][:jdk_arch]].join("-") + ".exe"
+installer = ["jre", node[:java][:release], "windows", node[:java][:jdk_arch]].join("-") + ".exe"
 
 java_home = node[:java][:jdk_dir]
 jre_home = node[:java][:jre_dir]
@@ -38,19 +32,19 @@ directory java_home do
 end
 
 remote_file dst do
-  source "#{node[:java][:mirror]}/jdk/packages/windows/#{installer}"
-  checksum node[:java][:checksum][installer]
+  source "#{node[:java][:mirror]}/#{installer}"
+  checksum node[:java][:checksum][node[:java][:jdk_arch]]
   not_if { File.exists?(dst) }
 end
 
 execute "install #{installer}" do
-  command "#{dst} /s /v/qn REBOOT=Suppress INSTALLDIR=#{java_home} /INSTALLDIRPUBJRE=#{jre_home}"
-  not_if { File.exists?("#{java_home}/bin/javac.exe") }
+  command "#{dst} /s STATIC=0 WEB_JAVA=0 INSTALLDIR=#{jre_home}"
+  not_if { File.exists?("#{jre_home}/bin/javaws.exe") }
 end
 
 env "JAVA_HOME" do
   action :create
-  value java_home
+  value jre_home
 end
 
 env "PATH" do
