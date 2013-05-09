@@ -1,0 +1,6 @@
+name             'java'
+maintainer       'hfinucane'
+maintainer_email 'hfinucane@solvco.com'
+license          'Apache 2.0'
+description      'Installs java'
+version          '0.0.1'
